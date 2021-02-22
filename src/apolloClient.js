@@ -13,7 +13,7 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-const httpLink = new HttpLink({ uri: 'http://39.103.172.209:4000/graphql' })
+const httpLink = new HttpLink({ uri: process.env.REACT_APP_APOLLO_SERVER })
 
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
