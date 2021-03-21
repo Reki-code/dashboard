@@ -29,7 +29,7 @@ export const ALL_TEACHER = gql`
       displayName
       username
       wxId
-
+      password
     }
   }
 `

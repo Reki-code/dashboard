@@ -13,6 +13,7 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import EditUser from './EditUser'
 
 const useStyles = makeStyles({
   root: {
@@ -36,8 +37,8 @@ function CustomPagination(props) {
 }
 
 const Results = ({teachers}) => {
-  console.log({teachers})
   const [alert, setAlert] = useState(false)
+  const [editDialog, setEditDialog] = useState(false)
   const [user, setUser] = useState()
 
   const columns = [
@@ -48,7 +49,7 @@ const Results = ({teachers}) => {
       width: 70,
     },
     { field: 'username', headerName: '工号', width: 140 },
-    { field: 'displayName', headerName: '昵称' },
+    { field: 'displayName', headerName: '姓名' },
     { field: 'wxId', headerName: '微信openID' },
     {
       field: 'id',
@@ -58,7 +59,7 @@ const Results = ({teachers}) => {
         setUser(params.row)
         const editUser = () => {
           console.log('edit', params.value)
-          setAlert(true)
+          setEditDialog(true)
         }
         const deleteUser = () => {
           console.log('delete', params.value)
@@ -94,11 +95,10 @@ const Results = ({teachers}) => {
           </div>
         </div>
       </Paper>
+
       <Dialog
         open={alert}
         onClose={() => setAlert(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">{"删除教师"}</DialogTitle>
         <DialogContent>
@@ -115,8 +115,10 @@ const Results = ({teachers}) => {
           </Button>
         </DialogActions>
       </Dialog>
+      
+      <EditUser open={editDialog} setOpen={setEditDialog} initialValues={user} setUser={setUser} />
     </>
   )
-};
+}
 
 export default Results;
