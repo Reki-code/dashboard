@@ -77,11 +77,6 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   const location = useLocation();
 
   const result = useQuery(ME)
-  const user = {
-    avatar: '/static/images/avatars/avatar_6.png',
-    jobTitle: '管理员',
-    name: result.loading ? '' : result.data.me.username
-  }
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
@@ -90,6 +85,14 @@ const NavBar = ({ onMobileClose, openMobile }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
+  if (result.loading) return <div>Loading</div>
+  if (result.error) return <div>Error</div>
+
+  const user = {
+    avatar: result.data.me.avatar,
+    jobTitle: '管理员',
+    name: result.loading ? '' : result.data.me.displayName
+  }
   const content = (
     <Box
       height="100%"

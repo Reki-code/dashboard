@@ -7,7 +7,8 @@ import {
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
-import data from './data';
+import { useQuery } from '@apollo/client'
+import { ALL_TEACHER } from '../../../graphql/user'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,17 +21,20 @@ const useStyles = makeStyles((theme) => ({
 
 const CustomerListView = () => {
   const classes = useStyles();
-  const [customers] = useState(data);
+  const teacherInfo = useQuery(ALL_TEACHER)
+
+  if (teacherInfo.loading) return <div>Loading</div>
+  if (teacherInfo.error) return <div>Error</div>
 
   return (
     <Page
       className={classes.root}
-      title="Customers"
+      title="教师信息"
     >
       <Container maxWidth={false}>
         <Toolbar />
         <Box mt={3}>
-          <Results customers={customers} />
+          <Results teachers={teacherInfo.data.users} />
         </Box>
       </Container>
     </Page>

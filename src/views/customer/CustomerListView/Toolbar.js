@@ -63,7 +63,7 @@ const Toolbar = ({ className, ...rest }) => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search customer"
+                placeholder="搜索教师"
                 variant="outlined"
               />
             </Box>

@@ -15,16 +15,23 @@ export const ME = gql`
   query {
     me {
       username
+      displayName
+      avatar
     }
   }
 `
 
 export const ALL_TEACHER = gql`
   query {
-    users(type: TEACHER) {
+    users(searchBy: { type: TEACHER}) {
       id
+      avatar
+      displayName
+      username
+      wxId
+
     }
-}
+  }
 `
 export const ALL_STUDENT = gql`
   query {

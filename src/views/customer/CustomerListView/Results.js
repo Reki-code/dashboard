@@ -1,69 +1,122 @@
-import React from 'react';
+import React, { useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import { DataGrid } from '@material-ui/data-grid'
 import { Paper } from '@material-ui/core'
+import Avatar from '@material-ui/core/Avatar'
+import IconButton from '@material-ui/core/IconButton'
+import EditIcon from '@material-ui/icons/Edit'
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
+import Pagination from '@material-ui/lab/Pagination'
+import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'firstName', headerName: 'First name', width: 130 },
-  { field: 'lastName', headerName: 'Last name', width: 130 },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 90,
+const useStyles = makeStyles({
+  root: {
+    display: 'flex',
   },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params) => `${params.getValue('firstName') || ''} ${params.getValue('lastName') || ''}`,
-  },
-];
+})
 
-const rows = [
-  {
-    id: 1, lastName: 'Snow', firstName: 'Jon', age: 35
-  },
-  {
-    id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42
-  },
-  {
-    id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45
-  },
-  {
-    id: 4, lastName: 'Stark', firstName: 'Arya', age: 16
-  },
-  {
-    id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null
-  },
-  {
-    id: 6, lastName: 'Melisandre', firstName: null, age: 150
-  },
-  {
-    id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44
-  },
-  {
-    id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36
-  },
-  {
-    id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65
-  },
-];
+function CustomPagination(props) {
+  const { state, api } = props;
+  const classes = useStyles();
 
-const Results = () => {
-  const a = 1
-  console.log(a)
   return (
-    <Paper elevation={3}>
-      <div sytle={{ display: 'flex', height: '100%' }}>
-        <div style={{ flexGrow: 1 }}>
-          <DataGrid autoHeight rows={rows} columns={columns} pageSize={10} checkboxSelection />
-        </div>
-      </div>
-    </Paper>
+    <Pagination
+      className={classes.root}
+      color="primary"
+      count={state.pagination.pageCount}
+      page={state.pagination.page + 1}
+      onChange={(event, value) => api.current.setPage(value - 1)}
+    />
   );
+}
+
+const Results = ({teachers}) => {
+  console.log({teachers})
+  const [alert, setAlert] = useState(false)
+  const [user, setUser] = useState()
+
+  const columns = [
+    {
+      field: 'avatar',
+      headerName: '头像',
+      renderCell: (params) => (<Avatar src={params.value} />),
+      width: 70,
+    },
+    { field: 'username', headerName: '工号', width: 140 },
+    { field: 'displayName', headerName: '昵称' },
+    { field: 'wxId', headerName: '微信openID' },
+    {
+      field: 'id',
+      headerName: '操作',
+      width: 120,
+      renderCell: (params) => {
+        setUser(params.row)
+        const editUser = () => {
+          console.log('edit', params.value)
+          setAlert(true)
+        }
+        const deleteUser = () => {
+          console.log('delete', params.value)
+          setAlert(true)
+        }
+        return (
+          <div style={{ display: 'flex' }}>
+            <IconButton onClick={editUser}><EditIcon /></IconButton>
+            <IconButton onClick={deleteUser}><DeleteForeverIcon /></IconButton>
+          </div>
+        )
+      }
+    },
+  ]
+
+  return (
+    <>
+      <Paper elevation={3}>
+        <div sytle={{ display: 'flex', height: '100%' }}>
+          <div style={{ flexGrow: 1 }}>
+            <DataGrid
+              autoHeight
+              rows={teachers}
+              columns={columns}
+              pageSize={10}
+              checkboxSelection={false}
+              disableColumnMenu
+              disableSelectionOnClick
+              components={{
+                Pagination: CustomPagination
+              }}
+            />
+          </div>
+        </div>
+      </Paper>
+      <Dialog
+        open={alert}
+        onClose={() => setAlert(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"删除教师"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {`确定要删除教师${user?.displayName}(${user?.username})吗？`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAlert(false)}>
+            取消
+          </Button>
+          <Button onClick={() => setAlert(false)} color="primary" autoFocus>
+            删除
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
 };
 
 export default Results;
