@@ -8,7 +8,7 @@ import { Button, LinearProgress } from '@material-ui/core'
 import { TextField } from 'formik-material-ui'
 import Avater from '@material-ui/core/Avatar'
 
-const EditUser = ({ initialValues, setUser, open, setOpen }) => {
+const EditUser = ({ initialValues, save, open, setOpen }) => {
   const handleClose = () => {
     setOpen(false)
   }
@@ -27,13 +27,11 @@ const EditUser = ({ initialValues, setUser, open, setOpen }) => {
             const errors = {}
             return errors
           }}
-          onSubmit={(values, { setSubmitting }) => {
+          onSubmit={ async (values, { setSubmitting }) => {
             setSubmitting(true)
+            save(values)
+            setSubmitting(false)
             setOpen(false)
-            setTimeout(() => {
-              setSubmitting(false);
-              alert(JSON.stringify(values, null, 2));
-            }, 1500)
           }}
         >
           {({ submitForm, isSubmitting }) => (

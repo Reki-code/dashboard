@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { DataGrid } from '@material-ui/data-grid'
+import { DataGrid, GridToolbarContainer } from '@material-ui/data-grid'
 import { Paper } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
-import IconButton from '@material-ui/core/IconButton'
-import EditIcon from '@material-ui/icons/Edit'
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import Pagination from '@material-ui/lab/Pagination'
 import Button from '@material-ui/core/Button'
+import EditIcon from '@material-ui/icons/Edit'
+import DeleteIcon from '@material-ui/icons/DeleteForever'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -39,7 +38,34 @@ function CustomPagination(props) {
 const Results = ({teachers}) => {
   const [alert, setAlert] = useState(false)
   const [editDialog, setEditDialog] = useState(false)
-  const [user, setUser] = useState()
+  const [user, setUser] = useState(teachers[0])
+  const handleSave = (user) => {
+    console.log('save', user)
+  }
+  const editUser = () => {
+    setEditDialog(true)
+  }
+  const deleteUser = () => {
+    setAlert(true)
+  }
+  const CustomToolbar = () => {
+    return (
+      <GridToolbarContainer>
+        <Button
+          onClick={editUser}
+          startIcon={<EditIcon />}
+        >
+          修改
+        </Button>
+        <Button
+          onClick={deleteUser}
+          startIcon={<DeleteIcon />}
+        >
+          删除
+        </Button>
+      </GridToolbarContainer>
+    )
+  }
 
   const columns = [
     {
@@ -51,28 +77,6 @@ const Results = ({teachers}) => {
     { field: 'username', headerName: '工号', width: 140 },
     { field: 'displayName', headerName: '姓名' },
     { field: 'wxId', headerName: '微信openID' },
-    {
-      field: 'id',
-      headerName: '操作',
-      width: 120,
-      renderCell: (params) => {
-        setUser(params.row)
-        const editUser = () => {
-          console.log('edit', params.value)
-          setEditDialog(true)
-        }
-        const deleteUser = () => {
-          console.log('delete', params.value)
-          setAlert(true)
-        }
-        return (
-          <div style={{ display: 'flex' }}>
-            <IconButton onClick={editUser}><EditIcon /></IconButton>
-            <IconButton onClick={deleteUser}><DeleteForeverIcon /></IconButton>
-          </div>
-        )
-      }
-    },
   ]
 
   return (
@@ -87,9 +91,12 @@ const Results = ({teachers}) => {
               pageSize={10}
               checkboxSelection={false}
               disableColumnMenu
-              disableSelectionOnClick
               components={{
-                Pagination: CustomPagination
+                Toolbar: CustomToolbar,
+                Pagination: CustomPagination,
+              }}
+              onSelectionModelChange={({ selectionModel }) => {
+                setUser(teachers.find(teacher => teacher.id === selectionModel[0]))
               }}
             />
           </div>
@@ -116,7 +123,7 @@ const Results = ({teachers}) => {
         </DialogActions>
       </Dialog>
       
-      <EditUser open={editDialog} setOpen={setEditDialog} initialValues={user} setUser={setUser} />
+      <EditUser open={editDialog} setOpen={setEditDialog} initialValues={user} save={handleSave} />
     </>
   )
 }
