@@ -8,23 +8,32 @@ import { Button, LinearProgress } from '@material-ui/core'
 import { TextField } from 'formik-material-ui'
 import Avater from '@material-ui/core/Avatar'
 
-const EditUser = ({ initialValues, save, open, setOpen }) => {
+const EditUser = ({ initialValues, save, open, setOpen, type }) => {
   const handleClose = () => {
     setOpen(false)
   }
-  console.log({ initialValues })
 
   return (
     <Dialog
       open={open}
       onClose={handleClose}
     >
-      <DialogTitle id="alert-dialog-title">{"修改教师信息"}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">{
+        type === 'edit'
+          ? "修改教师信息"
+          : "添加教师"
+      }</DialogTitle>
       <DialogContent>
         <Formik
           initialValues={initialValues}
           validate={values => {
             const errors = {}
+            if (!values.username) {
+              errors.username = '工号不能为空'
+            }
+            if (!values.password) {
+              errors.password = '密码不能为空'
+            }
             return errors
           }}
           onSubmit={ async (values, { setSubmitting }) => {

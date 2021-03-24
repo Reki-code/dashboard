@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Container,
@@ -7,8 +7,6 @@ import {
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
-import { useQuery } from '@apollo/client'
-import { ALL_TEACHER } from '../../../graphql/user'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,10 +19,6 @@ const useStyles = makeStyles((theme) => ({
 
 const CustomerListView = () => {
   const classes = useStyles();
-  const teacherInfo = useQuery(ALL_TEACHER)
-
-  if (teacherInfo.loading) return <div>Loading</div>
-  if (teacherInfo.error) return <div>Error</div>
 
   return (
     <Page
@@ -34,7 +28,7 @@ const CustomerListView = () => {
       <Container maxWidth={false}>
         <Toolbar />
         <Box mt={3}>
-          <Results teachers={teacherInfo.data.users} />
+          <Results />
         </Box>
       </Container>
     </Page>

@@ -13,6 +13,10 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import EditUser from './EditUser'
+import { useQuery } from '@apollo/client'
+import { useMutation } from '@apollo/client'
+import { ALL_TEACHER } from '../../../graphql/user'
+import { UPDATE_USER } from '../../../graphql/user'
 
 const useStyles = makeStyles({
   root: {
@@ -35,13 +39,50 @@ function CustomPagination(props) {
   );
 }
 
-const Results = ({teachers}) => {
+const columns = [
+  {
+    field: 'avatar',
+    headerName: '头像',
+    renderCell: (params) => (<Avatar src={params.value} />),
+    width: 70,
+  },
+  { field: 'username', headerName: '工号', width: 140 },
+  { field: 'displayName', headerName: '姓名' },
+  { field: 'wxId', headerName: '微信openID' },
+]
+
+const Results = () => {
   const [alert, setAlert] = useState(false)
   const [editDialog, setEditDialog] = useState(false)
-  const [user, setUser] = useState(teachers[0])
+  const [user, setUser] = useState(null)
+  const teacherInfo = useQuery(ALL_TEACHER)
+  const [updateUser] = useMutation(UPDATE_USER)
+
+  if (teacherInfo.loading) return <div>Loading</div>
+  if (teacherInfo.error) return <div>Error</div>
+
+  const teachers = teacherInfo.data.users
+
   const handleSave = (user) => {
-    console.log('save', user)
+    const { id, displayName, username, password } = user
+    updateUser({
+      variables: {
+        input: { id, displayName, username, password }
+      },
+      update(cache, { data: { updateUser }}) {
+        const dataInStore = cache.readQuery({ query: ALL_TEACHER })
+        const users = dataInStore.users.filter(u => u.id !== updateUser.user.id)
+        cache.writeQuery({
+          query: ALL_TEACHER,
+          data: {
+            ...dataInStore,
+            users: [...users, updateUser.user]
+          }
+        })
+      },
+    })
   }
+
   const editUser = () => {
     setEditDialog(true)
   }
@@ -66,18 +107,6 @@ const Results = ({teachers}) => {
       </GridToolbarContainer>
     )
   }
-
-  const columns = [
-    {
-      field: 'avatar',
-      headerName: '头像',
-      renderCell: (params) => (<Avatar src={params.value} />),
-      width: 70,
-    },
-    { field: 'username', headerName: '工号', width: 140 },
-    { field: 'displayName', headerName: '姓名' },
-    { field: 'wxId', headerName: '微信openID' },
-  ]
 
   return (
     <>
@@ -123,7 +152,7 @@ const Results = ({teachers}) => {
         </DialogActions>
       </Dialog>
       
-      <EditUser open={editDialog} setOpen={setEditDialog} initialValues={user} save={handleSave} />
+      <EditUser type={'edit'} open={editDialog} setOpen={setEditDialog} initialValues={user} save={handleSave} />
     </>
   )
 }

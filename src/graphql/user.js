@@ -40,3 +40,33 @@ export const ALL_STUDENT = gql`
     }
   }
 `
+
+export const UPDATE_USER = gql`
+  mutation ($input: UpdateUserInput!) {
+    updateUser(input: $input) {
+      user {
+        id
+        avatar
+        displayName
+        password
+        username
+        wxId
+      }
+    }
+  }
+`
+
+export const ADD_USER = gql`
+  mutation ($input: CreateUserInput!) {
+    createUser(input: $input) {
+      user {
+        id
+        avatar
+        displayName
+        password
+        username
+        wxId
+      }
+    }
+  }
+`

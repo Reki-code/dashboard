@@ -4,7 +4,8 @@ const Logo = (props) => {
   return (
     <img
       alt="Logo"
-      src="/static/logo.svg"
+      src="/static/graduation.png"
+      style={{width: 48}}
       {...props}
     />
   );
