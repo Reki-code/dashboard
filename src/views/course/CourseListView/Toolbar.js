@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
   Box,
-  Button,
   Card,
   CardContent,
   TextField,
@@ -23,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Toolbar = ({ className, ...rest }) => {
+const Toolbar = ({ filter, setFilter, className, ...rest }) => {
   const classes = useStyles();
 
   return (
@@ -31,29 +30,14 @@ const Toolbar = ({ className, ...rest }) => {
       className={clsx(classes.root, className)}
       {...rest}
     >
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-      >
-        <Button className={classes.importButton}>
-          Import
-        </Button>
-        <Button className={classes.exportButton}>
-          Export
-        </Button>
-        <Button
-          color="primary"
-          variant="contained"
-        >
-          Add product
-        </Button>
-      </Box>
       <Box mt={3}>
         <Card>
           <CardContent>
             <Box maxWidth={500}>
               <TextField
                 fullWidth
+                value={filter}
+                onChange={({target}) => setFilter(target.value)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -66,7 +50,7 @@ const Toolbar = ({ className, ...rest }) => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search product"
+                placeholder="搜索课程"
                 variant="outlined"
               />
             </Box>

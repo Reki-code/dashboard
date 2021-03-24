@@ -8,7 +8,7 @@ import StudentListView from 'src/views/customer/StudentListView'
 import DashboardView from 'src/views/reports/DashboardView';
 import LoginView from 'src/views/auth/LoginView';
 import NotFoundView from 'src/views/errors/NotFoundView';
-import ProductListView from 'src/views/product/ProductListView';
+import ProductListView from 'src/views/course/CourseListView';
 import SettingsView from 'src/views/settings/SettingsView';
 
 const routes = [
