@@ -14,7 +14,6 @@ import {
 import {
   BarChart as BarChartIcon,
   Lock as LockIcon,
-  Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
   Users as UsersIcon
@@ -48,11 +47,6 @@ const items = [
     href: '/app/account',
     icon: UserIcon,
     title: '账号'
-  },
-  {
-    href: '/app/settings',
-    icon: SettingsIcon,
-    title: '设置'
   },
   {
     href: '/login',

@@ -1,12 +1,11 @@
 import React from 'react';
-import {
-  Container,
-  Grid,
-  makeStyles
-} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Profile from './Profile';
 import ProfileDetails from './ProfileDetails';
+import Password from './Password'
+import { useQuery } from '@apollo/client'
+import { ME } from '../../../graphql/user'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,40 +13,52 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100%',
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3)
+  },
+  content: {
+    paddingLeft: 8,
+    paddingRight: 8,
+    display: 'grid',
+    gap: 16,
+    gridTemplateColumns: '1fr 2fr',
+    gridTemplateRows: 'auto',
+    gridTemplateAreas: `
+      'profile details'
+      'password details'
+    `,
+  },
+  profile: {
+    gridArea: 'profile',
+  },
+  details: {
+    gridArea: 'details',
+  },
+  password: {
+    gridArea: 'password',
   }
 }));
 
 const Account = () => {
-  const classes = useStyles();
+  const classes = useStyles()
+  const adminInfo = useQuery(ME)
+
+  if (adminInfo.loading) return <div>Loading</div>
+  if (adminInfo.error) {
+    console.log({ adminInfo })
+    return <div>Error</div>
+  }
+
+  const admin = adminInfo.data.me
 
   return (
     <Page
       className={classes.root}
-      title="Account"
+      title="账号信息"
     >
-      <Container maxWidth="lg">
-        <Grid
-          container
-          spacing={3}
-        >
-          <Grid
-            item
-            lg={4}
-            md={6}
-            xs={12}
-          >
-            <Profile />
-          </Grid>
-          <Grid
-            item
-            lg={8}
-            md={6}
-            xs={12}
-          >
-            <ProfileDetails />
-          </Grid>
-        </Grid>
-      </Container>
+      <div className={classes.content}>
+        <Profile admin={admin} className={classes.profile} />
+        <ProfileDetails admin={admin} className={classes.details} />
+        <Password admin={admin} className={classes.password} />
+      </div>
     </Page>
   );
 };

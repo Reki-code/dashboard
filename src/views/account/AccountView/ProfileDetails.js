@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const ProfileDetails = ({ className, ...rest }) => {
+const ProfileDetails = ({ admin, className, ...rest }) => {
   const classes = useStyles();
   const [values, setValues] = useState({
     firstName: 'Katarina',
@@ -59,8 +59,7 @@ const ProfileDetails = ({ className, ...rest }) => {
     >
       <Card>
         <CardHeader
-          subheader="The information can be edited"
-          title="Profile"
+          title="管理员信息"
         />
         <Divider />
         <CardContent>
@@ -182,7 +181,7 @@ const ProfileDetails = ({ className, ...rest }) => {
             color="primary"
             variant="contained"
           >
-            Save details
+            保存
           </Button>
         </Box>
       </Card>

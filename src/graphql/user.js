@@ -14,6 +14,7 @@ export const LOGIN = gql`
 export const ME = gql`
   query {
     me {
+      id
       username
       displayName
       avatar
@@ -56,6 +57,20 @@ export const UPDATE_USER = gql`
         password
         username
         wxId
+      }
+    }
+  }
+`
+
+export const CHANGE_PASSWORD = gql`
+  mutation ($old: String!, $new: String!) {
+    changePassword(input: {
+      old: $old
+      new: $new
+    }) {
+      success
+      user {
+        id
       }
     }
   }
