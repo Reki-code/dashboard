@@ -35,9 +35,14 @@ const items = [
     title: '教师信息'
   },
   {
+    href: '/app/students',
+    icon: UsersIcon,
+    title: '学生信息'
+  },
+  {
     href: '/app/products',
     icon: ShoppingBagIcon,
-    title: '学生信息'
+    title: '课程信息'
   },
   {
     href: '/app/account',

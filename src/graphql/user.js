@@ -35,8 +35,13 @@ export const ALL_TEACHER = gql`
 `
 export const ALL_STUDENT = gql`
   query {
-    users(type: STUDENT) {
+    users(searchBy: { type: STUDENT}) {
       id
+      avatar
+      displayName
+      username
+      wxId
+      password
     }
   }
 `
