@@ -27,7 +27,7 @@ const Dashboard = () => {
   return (
     <Page
       className={classes.root}
-      title="Dashboard"
+      title="信息总览"
     >
       <Container maxWidth={false}>
         <Grid
