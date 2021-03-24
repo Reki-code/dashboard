@@ -70,3 +70,13 @@ export const ADD_USER = gql`
     }
   }
 `
+
+export const DELETE_USER = gql`
+  mutation ($id: ID!) {
+    deleteUser(input: {id: $id}) {
+      user {
+        id
+      }
+    }
+  }
+`

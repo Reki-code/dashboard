@@ -17,6 +17,7 @@ import { useQuery } from '@apollo/client'
 import { useMutation } from '@apollo/client'
 import { ALL_TEACHER } from '../../../graphql/user'
 import { UPDATE_USER } from '../../../graphql/user'
+import { DELETE_USER } from '../../../graphql/user'
 
 const useStyles = makeStyles({
   root: {
@@ -57,6 +58,7 @@ const Results = () => {
   const [user, setUser] = useState(null)
   const teacherInfo = useQuery(ALL_TEACHER)
   const [updateUser] = useMutation(UPDATE_USER)
+  const [deleteUser] = useMutation(DELETE_USER)
 
   if (teacherInfo.loading) return <div>Loading</div>
   if (teacherInfo.error) return <div>Error</div>
@@ -82,14 +84,32 @@ const Results = () => {
       },
     })
   }
+  const handleDelete = () => {
+    deleteUser({
+      variables: {
+        id: user.id
+      },
+      update(cache, { data: { deleteUser }}) {
+        const dataInStore = cache.readQuery({ query: ALL_TEACHER })
+        const users = dataInStore.users.filter(u => u.id !== deleteUser.user.id)
+        cache.writeQuery({
+          query: ALL_TEACHER,
+          data: {
+            ...dataInStore,
+            users
+          }
+        })
+      }
+    })
+    setUser(null)
+    setAlert(false)
+  }
 
   const editUser = () => {
     setEditDialog(true)
   }
-  const deleteUser = () => {
-    setAlert(true)
-  }
   const CustomToolbar = () => {
+    if (!user) return null
     return (
       <GridToolbarContainer>
         <Button
@@ -99,7 +119,7 @@ const Results = () => {
           修改
         </Button>
         <Button
-          onClick={deleteUser}
+          onClick={() => setAlert(true)}
           startIcon={<DeleteIcon />}
         >
           删除
@@ -146,7 +166,7 @@ const Results = () => {
           <Button onClick={() => setAlert(false)}>
             取消
           </Button>
-          <Button onClick={() => setAlert(false)} color="primary" autoFocus>
+          <Button onClick={handleDelete} color="primary" autoFocus>
             删除
           </Button>
         </DialogActions>
