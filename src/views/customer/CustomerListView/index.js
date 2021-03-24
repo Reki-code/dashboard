@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Container,
@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CustomerListView = () => {
-  const classes = useStyles();
+  const classes = useStyles()
+  const [filter, setFilter] = useState('')
 
   return (
     <Page
@@ -26,9 +27,9 @@ const CustomerListView = () => {
       title="教师信息"
     >
       <Container maxWidth={false}>
-        <Toolbar />
+        <Toolbar filter={filter} setFilter={setFilter} />
         <Box mt={3}>
-          <Results />
+          <Results filter={filter} />
         </Box>
       </Container>
     </Page>

@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Toolbar = ({ className, ...rest }) => {
+const Toolbar = ({ filter, setFilter, className, ...rest }) => {
   const classes = useStyles();
   const [editDialog, setEditDialog] = useState(false)
   const [addUser] = useMutation(ADD_USER)
@@ -47,6 +47,9 @@ const Toolbar = ({ className, ...rest }) => {
         })
       },
     })
+  }
+  const handleChange = ({target}) => {
+    setFilter(target.value)
   }
 
   return (
@@ -85,6 +88,8 @@ const Toolbar = ({ className, ...rest }) => {
             <CardContent>
               <Box maxWidth={500}>
                 <TextField
+                  value={filter}
+                  onChange={handleChange}
                   fullWidth
                   InputProps={{
                     startAdornment: (

@@ -52,7 +52,7 @@ const columns = [
   { field: 'wxId', headerName: '微信openID' },
 ]
 
-const Results = () => {
+const Results = ({ filter }) => {
   const [alert, setAlert] = useState(false)
   const [editDialog, setEditDialog] = useState(false)
   const [user, setUser] = useState(null)
@@ -63,7 +63,8 @@ const Results = () => {
   if (teacherInfo.loading) return <div>Loading</div>
   if (teacherInfo.error) return <div>Error</div>
 
-  const teachers = teacherInfo.data.users
+  const teachers = teacherInfo.data?.users
+    .filter(t => t.username.includes(filter) || t.displayName.includes(filter))
 
   const handleSave = (user) => {
     const { id, displayName, username, password } = user
