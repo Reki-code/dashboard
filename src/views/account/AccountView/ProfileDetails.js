@@ -12,21 +12,8 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
-
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  }
-];
+import { useMutation } from '@apollo/client'
+import { UPDATE_USER, ME } from '../../../graphql/user'
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -35,13 +22,8 @@ const useStyles = makeStyles(() => ({
 const ProfileDetails = ({ admin, className, ...rest }) => {
   const classes = useStyles();
   const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA'
-  });
+    displayName: admin.displayName,
+  })
 
   const handleChange = (event) => {
     setValues({
@@ -49,6 +31,23 @@ const ProfileDetails = ({ admin, className, ...rest }) => {
       [event.target.name]: event.target.value
     });
   };
+  const [updateUser] = useMutation(UPDATE_USER)
+  const handleSave = () => {
+    const { displayName } = values
+    updateUser({
+      variables: { input: { id: admin.id, displayName }},
+      update(cache, { data: { updateUser }}) {
+        const dataInStore = cache.readQuery({ query: ME })
+        cache.writeQuery({
+          query: ME,
+          data: {
+            ...dataInStore,
+            me: updateUser.user,
+          }
+        })
+      }
+    })
+  }
 
   return (
     <form
@@ -74,100 +73,13 @@ const ProfileDetails = ({ admin, className, ...rest }) => {
             >
               <TextField
                 fullWidth
-                helperText="Please specify the first name"
-                label="First name"
-                name="firstName"
+                label="姓名"
+                name="displayName"
                 onChange={handleChange}
                 required
-                value={values.firstName}
+                value={values.displayName}
                 variant="outlined"
               />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Last name"
-                name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Email Address"
-                name="email"
-                onChange={handleChange}
-                required
-                value={values.email}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Country"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Select State"
-                name="state"
-                onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
-              >
-                {states.map((option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
             </Grid>
           </Grid>
         </CardContent>
@@ -180,6 +92,7 @@ const ProfileDetails = ({ admin, className, ...rest }) => {
           <Button
             color="primary"
             variant="contained"
+            onClick={handleSave}
           >
             保存
           </Button>
