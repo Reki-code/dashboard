@@ -14,7 +14,7 @@ import {
 import {
   BarChart as BarChartIcon,
   Lock as LockIcon,
-  ShoppingBag as ShoppingBagIcon,
+  Grid as GridIcon,
   User as UserIcon,
   Users as UsersIcon
 } from 'react-feather';
@@ -40,7 +40,7 @@ const items = [
   },
   {
     href: '/app/products',
-    icon: ShoppingBagIcon,
+    icon: GridIcon,
     title: '课程信息'
   },
   {
