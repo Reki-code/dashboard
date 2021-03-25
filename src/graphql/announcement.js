@@ -10,3 +10,21 @@ export const ANNOUNCEMENTS = gql`
     }
   }
 `
+
+export const SEND_ANN = gql`
+  mutation ($title: String, $content: String) {
+    createAnnouncemnt(input: {
+      title: $title
+      content: $content
+      forAll: true
+    }) {
+      announcement {
+        id
+        title
+        content
+        createdAt
+        forAll
+      }
+    }
+  }
+`
