@@ -2,15 +2,16 @@ import React from 'react';
 import {
   Container,
   Grid,
-  makeStyles
+  makeStyles,
+  colors,
 } from '@material-ui/core';
 import Page from 'src/components/Page';
-import Budget from './Budget';
-import Sales from './Sales';
-import TasksProgress from './TasksProgress';
-import TotalCustomers from './TotalCustomers';
-import TotalProfit from './TotalProfit';
-import TrafficByDevice from './TrafficByDevice';
+import Announcement from './Announcement'
+import Total from './Total'
+import { useQuery } from '@apollo/client'
+import { COUNT } from '../../../graphql/info'
+import PeopleIcon from '@material-ui/icons/PeopleOutlined'
+import AppsIcon from '@material-ui/icons/Apps'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,7 +23,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Dashboard = () => {
-  const classes = useStyles();
+  const classes = useStyles()
+  const info = useQuery(COUNT)
 
   return (
     <Page
@@ -34,42 +36,25 @@ const Dashboard = () => {
           container
           spacing={3}
         >
-          <Grid
-            item
-            lg={3}
-            sm={6}
-            xl={3}
-            xs={12}
-          >
-            <Budget />
-          </Grid>
-          <Grid
-            item
-            lg={3}
-            sm={6}
-            xl={3}
-            xs={12}
-          >
-            <TotalCustomers />
-          </Grid>
-          <Grid
-            item
-            lg={3}
-            sm={6}
-            xl={3}
-            xs={12}
-          >
-            <TasksProgress />
-          </Grid>
-          <Grid
-            item
-            lg={3}
-            sm={6}
-            xl={3}
-            xs={12}
-          >
-            <TotalProfit />
-          </Grid>
+          <Total info={{
+            title: '教师总数',
+            number: info.data?.countTeacher,
+            color: colors.orange[500],
+            icon: <PeopleIcon />,
+          }} />
+          <Total info={{
+            title: '课程总数',
+            number: info.data?.countCourse,
+            color: colors.blue[500],
+            icon: <AppsIcon />,
+          }} />
+          <Total info={{
+            title: '学生总数',
+            number: info.data?.countStudent,
+            color: colors.deepOrange[500],
+            icon: <PeopleIcon />,
+          }} />
+
           <Grid
             item
             lg={8}
@@ -77,16 +62,7 @@ const Dashboard = () => {
             xl={9}
             xs={12}
           >
-            <Sales />
-          </Grid>
-          <Grid
-            item
-            lg={4}
-            md={6}
-            xl={3}
-            xs={12}
-          >
-            <TrafficByDevice />
+            <Announcement />
           </Grid>
         </Grid>
       </Container>
