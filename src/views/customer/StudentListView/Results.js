@@ -29,6 +29,7 @@ function CustomPagination(props) {
   const { state, api } = props;
   const classes = useStyles();
 
+  return null
   return (
     <Pagination
       className={classes.root}
